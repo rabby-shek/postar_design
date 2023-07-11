@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>CPM Math Problem Solution System</title>
+  <style>
+    /* Add your CSS styles here */
+    body {
+      font-family: Arial, sans-serif;
+    }
+
+    h1 {
+      text-align: center;
+    }
+
+    form {
+      margin-bottom: 20px;
+    }
+
+    form div {
+      margin-bottom: 10px;
+    }
+
+    label {
+      display: inline-block;
+      width: 150px;
+    }
+
+    input[type="text"],
+    input[type="number"] {
+      padding: 5px;
+      width: 200px;
+    }
+
+    button {
+      padding: 8px 16px;
+      background-color: #4CAF50;
+      color: #fff;
+      border: none;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background-color: #45a049;
+    }
+
+    #activityList {
+      margin-bottom: 20px;
+    }
+
+    table {
+      border-collapse: collapse;
+      width: 100%;
+    }
+
+    th, td {
+      padding: 8px;
+      text-align: left;
+      border-bottom: 1px solid #ddd;
+    }
+
+    th {
+      background-color: #f2f2f2;
+      font-weight: bold;
+    }
+
+    #cpmResult {
+      font-weight: bold;
+    }
+
+    .error {
+      color: red;
+    }
+
+    .action-buttons {
+      display: flex;
+    }
+
+    .action-buttons button {
+      margin-right: 5px;
+    }
+  </style>
+</head>
+<body>
+  <h1>CPM Math Problem Solution System</h1>
+  
+  <form id="cpmForm">
+    <div>
+      <label for="taskID">Task ID:</label>
+      <input type="text" id="taskID" required>
+    </div>
+    <div>
+      <label for="activityName">Activity Name:</label>
+      <input type="text" id="activityName" required>
+    </div>
+    <div>
+      <label for="activityDuration">Activity Duration:</label>
+      <input type="number" id="activityDuration" required>
+    </div>
+    <div>
+      <label for="dependency">Dependency:</label>
+      <input type="text" id="dependency" placeholder="Separate multiple dependencies with commas">
+    </div>
+    <button type="button" onclick="addActivity()">Add Activity</button>
+    <div id="errorMessage" class="error"></div>
+  </form>
+
+  <div id="activityList">
+    <!-- Activities will be dynamically added here -->
+  </div>
+
+  <button type="button" onclick="calculateCPM()">Calculate CPM</button>
+
+  <div id="cpmResult">
+    <!-- CPM result will be displayed here -->
+  </div>
+
+  <script>
+    // Array to store the activities
+    let activities = [
+      {
+        taskID: "A",
+        name: "Activity 1",
+        duration: 7,
+        dependency: []
+      },
+      {
+        taskID: "B",
+        name: "Activity 2",
+        duration: 9,
+        dependency: []
+      },
+      {
+        taskID: "C",
+        name: "Activity 3",
+        duration: 12,
+        dependency: ["A"]
+      },
+      {
+        taskID: "D",
+        name: "Activity 3",
+        duration: 8,
+        dependency: ["A,B"]
+      },
+      {
+        taskID: "E",
+        name: "Activity 3",
+        duration: 9,
+        dependency: ["D"]
+      },
+      {
+        taskID: "F",
+        name: "Activity 3",
+        duration: 6,
+        dependency: ["C,E"]
+      },
+      {
+        taskID: "G",
+        name: "Activity 3",
+        duration: 5,
+        dependency: ["E"]
+      }
+    ];
+
+    // Function to add a new activity to the list
+    function addActivity() {
+      const taskID = document.getElementById("taskID").value.toUpperCase();
+      const activityName = document.getElementById("activityName").value;
+      const activityDuration = parseInt(document.getElementById("activityDuration").value);
+      const dependency = document.getElementById("dependency").value.toUpperCase().split(",").map(dep => dep.trim());
+
+      // Input validations
+      const errorMessage = document.getElementById("errorMessage");
+      errorMessage.textContent = "";
+
+      if (!taskID || !activityName || !activityDuration) {
+        errorMessage.textContent = "Please fill in all the fields.";
+        return;
+      }
+
+      if (isNaN(activityDuration) || activityDuration <= 0) {
+        errorMessage.textContent = "Please enter a valid duration.";
+        return;
+      }
+
+      // Check for duplicate task IDs
+      if (activities.find(activity => activity.taskID === taskID)) {
+        errorMessage.textContent = "Task ID already exists.";
+        return;
+      }
+
+      // Check for invalid dependencies
+      for (let i = 0; i < dependency.length; i++) {
+        if (dependency[i] && !activities.find(activity => activity.taskID === dependency[i])) {
+          errorMessage.textContent = "Invalid dependency: " + dependency[i];
+          return;
+        }
+      }
+
+      const activity = {
+        taskID: taskID,
+        name: activityName,
+        duration: activityDuration,
+        dependency: dependency
+      };
+
+      activities.push(activity);
+
+      // Clear the input fields
+      document.getElementById("taskID").value = "";
+      document.getElementById("activityName").value = "";
+      document.getElementById("activityDuration").value = "";
+      document.getElementById("dependency").value = "";
+
+      // Display the added activity
+      displayActivities();
+    }
+
+    // Function to delete an activity
+    function deleteActivity(taskID) {
+      const index = activities.findIndex(activity => activity.taskID === taskID);
+      if (index !== -1) {
+        activities.splice(index, 1);
+        displayActivities();
+      }
+    }
+
+    // Function to edit an activity
+    function editActivity(taskID) {
+      const activity = activities.find(activity => activity.taskID === taskID);
+      if (activity) {
+        document.getElementById("taskID").value = activity.taskID;
+        document.getElementById("activityName").value = activity.name;
+        document.getElementById("activityDuration").value = activity.duration;
+        document.getElementById("dependency").value = activity.dependency.join(", ");
+        deleteActivity(taskID); // Delete the existing activity
+      }
+    }
+
+    // Function to display the activities in the list
+    function displayActivities() {
+      const activityList = document.getElementById("activityList");
+      activityList.innerHTML = "";
+
+      activities.forEach(activity => {
+        const activityItem = document.createElement("div");
+        activityItem.textContent = `${activity.taskID} - ${activity.name} (Duration: ${activity.duration}, Dependencies: ${activity.dependency.join(", ")})`;
+        
+
+        const actionButtons = document.createElement("div");
+        actionButtons.className = "action-buttons";
+
+        const editButton = document.createElement("button");
+        editButton.textContent = "Edit";
+        editButton.onclick = () => editActivity(activity.taskID);
+        actionButtons.appendChild(editButton);
+
+        const deleteButton = document.createElement("button");
+        deleteButton.textContent = "Delete";
+        deleteButton.onclick = () => deleteActivity(activity.taskID);
+        actionButtons.appendChild(deleteButton);
+
+        activityItem.appendChild(actionButtons);
+        activityList.appendChild(activityItem);
+      });
+    }
+
+    // Function to calculate CPM
+    function calculateCPM() {
+      // Step 1: Initialize variables
+      let network = {};
+      let visited = {};
+      let maxTime = 0;
+
+      // Step 2: Create network graph
+      for (let i = 0; i < activities.length; i++) {
+        const activity = activities[i];
+        const taskID = activity.taskID;
+        const activityName = activity.name;
+        const activityDuration = activity.duration;
+        const activityDependency = activity.dependency;
+
+        visited[taskID] = false;
+        network[taskID] = {
+          name: activityName,
+          duration: activityDuration,
+          dependency: activityDependency,
+          ES: 0,
+          EF: 0,
+          LS: 0,
+          LF: 0
+        };
+
+        // Update maxTime if needed
+        if (activityDependency.length === 0 && activityDuration > maxTime) {
+          maxTime = activityDuration;
+        }
+      }
+
+      // Step 3: Perform depth-first search
+      function dfs(node) {
+  visited[node] = true;
+
+  const dependencies = network[node].dependency;
+
+  if (!dependencies || dependencies.length === 0) {
+    network[node].ES = 0;
+    network[node].EF = network[node].duration;
+  } else {
+    let maxFinishTime = 0;
+
+    for (let i = 0; i < dependencies.length; i++) {
+      const dependency = dependencies[i];
+      if (network[dependency] && !visited[dependency]) {
+        dfs(dependency);
+      }
+      if (network[dependency] && network[dependency].EF > maxFinishTime) {
+        maxFinishTime = network[dependency].EF;
+      }
+    }
+
+    network[node].ES = maxFinishTime;
+    network[node].EF = maxFinishTime + network[node].duration;
+  }
+
+  if (network[node].EF > maxTime) {
+    maxTime = network[node].EF;
+  }
+}
+
+
+      // Perform depth-first search for each activity
+      for (let i = 0; i < activities.length; i++) {
+        const activity = activities[i];
+        const taskID = activity.taskID;
+        if (!visited[taskID]) {
+          dfs(taskID);
+        }
+      }
+
+      // Step 4: Calculate LS and LF
+      for (let i = activities.length - 1; i >= 0; i--) {
+        const activity = activities[i];
+        const taskID = activity.taskID;
+        const activityDependency = activity.dependency;
+
+        if (activityDependency.length === 0) {
+          network[taskID].LF = maxTime;
+          network[taskID].LS = maxTime - network[taskID].duration;
+        } else {
+          let minStartTime = Infinity;
+          for (let j = 0; j < activityDependency.length; j++) {
+            const dependency = activityDependency[j];
+            if (network[dependency] && network[dependency].LS < minStartTime) {
+              minStartTime = network[dependency].LS;
+            }
+          }
+
+          network[taskID].LF = minStartTime;
+          network[taskID].LS = minStartTime - network[taskID].duration;
+        }
+      }
+
+      // Display the CPM result in a table
+      const cpmResult = document.getElementById("cpmResult");
+      cpmResult.innerHTML = `
+        <h2>CPM Result</h2>
+        <table>
+          <tr>
+            <th>Task ID</th>
+            <th>Activity</th>
+            <th>Duration</th>
+            <th>Dependencies</th>
+            <th>ES</th>
+            <th>EF</th>
+            <th>LS</th>
+            <th>LF</th>
+          </tr>
+          ${activities.map(activity => `
+            <tr>
+              <td>${activity.taskID}</td>
+              <td>${activity.name}</td>
+              <td>${activity.duration}</td>
+              <td>${activity.dependency.join(", ")}</td>
+              <td>${network[activity.taskID].ES}</td>
+              <td>${network[activity.taskID].EF}</td>
+              <td>${network[activity.taskID].LS}</td>
+              <td>${network[activity.taskID].LF}</td>
+            </tr>
+          `).join("")}
+        </table>
+      `;
+    }
+
+    // Display the initial activities
+    displayActivities();
+  </script>
+</body>
+</html>
