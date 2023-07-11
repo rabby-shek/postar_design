@@ -1,42 +1,43 @@
-* {
+*{
     margin: 0;
     padding: 0;
     box-sizing: border-box;
 }
-
-.poster_body {
+.poster_body{
     position: relative;
+    
 }
 
 .poster_logo {
     position: absolute;
     margin-top: 150px;
     margin-left: 100px;
+  
 }
 
-.poster_banner_text {
+.poster_banner_text{
     position: absolute;
     margin-top: 270px;
     margin-left: 110px;
     color: #A9AFF8;
     align-items: center;
     text-align: center;
+   
 }
-
-.poster_banner_text h1 {
+.poster_banner_text h1{
     font-size: 90px;
     font-weight: bolder;
     line-height: 100px;
     font-family: 'DM Sans', sans-serif;
-}
+    
 
-.poster_banner_text p {
+}
+.poster_banner_text p{
     color: black;
     font-size: 50px;
     font-family: 'WindSong', cursive;
 }
-
-.accounting {
+.accounting{
     position: absolute;
     right: 0;
     margin-right: 450px;
@@ -47,13 +48,11 @@
     font-size: 30px;
     font-weight: 600;
 }
-
-.accounting img {
+.accounting img{
     height: 100px;
     width: 100px;
 }
-
-.hrm {
+.hrm{
     position: absolute;
     right: 0;
     margin-right: 300px;
@@ -64,13 +63,11 @@
     font-size: 30px;
     font-weight: 600;
 }
-
-.hrm img {
+.hrm img{
     height: 100px;
     width: 100px;
 }
-
-.purchase {
+.purchase{
     position: absolute;
     right: 0;
     margin-right: 200px;
@@ -81,30 +78,27 @@
     font-size: 30px;
     font-weight: 600;
 }
-
-.purchase img {
+.purchase img{
     height: 100px;
     width: 100px;
 }
 
-.sales {
+.sales{
     position: absolute;
     right: 0;
     margin-right: 400px;
     margin-top: 600px;
     align-items: center;
     text-align: center;
-    color: #A9AFF8;
+    color: #A9AFF8; 
     font-size: 30px;
     font-weight: 600;
 }
-
-.sales img {
+.sales img{
     height: 100px;
     width: 100px;
 }
-
-.report {
+.report{
     position: absolute;
     right: 0;
     margin-right: 100px;
@@ -115,25 +109,21 @@
     font-size: 30px;
     font-weight: 600;
 }
-
-.report img {
+.report img{
     height: 100px;
     width: 100px;
 }
-
-.contact {
+.contact{
     position: absolute;
     margin-top: 650px;
     margin-left: 100px;
     font-size: 20px;
 }
-
-.contact span {
+.contact span{
     color: grey;
     margin-right: 10px;
 }
-
-.triangle_style {
+.triangle_style{
     position: absolute;
     height: 300px;
     width: 400px;
@@ -143,8 +133,7 @@
     margin-top: 400px;
     transform: rotate(65deg);
 }
-
-.triangle_style_2 {
+.triangle_style_2{
     position: absolute;
     height: 300px;
     width: 300px;
@@ -154,8 +143,7 @@
     margin-top: 228px;
     transform: rotate(-60deg);
 }
-
-.diamond_1 {
+.diamond_1{
     height: 15px;
     width: 15px;
     position: absolute;
@@ -164,8 +152,7 @@
     margin-left: 470px;
     transform: rotate(45deg);
 }
-
-.diamond_2 {
+.diamond_2{
     height: 17px;
     width: 17px;
     position: absolute;
@@ -174,8 +161,7 @@
     margin-left: 640px;
     transform: rotate(45deg);
 }
-
-.diamond_3 {
+.diamond_3{
     height: 15px;
     width: 15px;
     position: absolute;
@@ -183,29 +169,4 @@
     margin-top: 600px;
     margin-left: 610px;
     transform: rotate(45deg);
-}
-
-/* Example CSS modifications for responsiveness */
-@media (max-width: 768px) {
-  .poster_banner_text h1 {
-    font-size: 60px;
-    line-height: 70px;
-  }
-  .poster_banner_text p {
-    font-size: 30px;
-  }
-  .accounting,
-  .hrm,
-  .purchase,
-  .sales,
-  .report {
-    font-size: 20px;
-  }
-  .contact {
-    font-size: 16px;
-  }
-  .triangle_style,
-  .triangle_style_2 {
-    display: none;
-  }
 }
